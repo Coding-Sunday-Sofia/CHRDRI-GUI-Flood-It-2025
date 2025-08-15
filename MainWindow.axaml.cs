@@ -1,5 +1,6 @@
 /* clear && astyle --style=java --indent=tab *.cs && dotnet run */
 
+using System;
 using Avalonia.Media;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -7,7 +8,9 @@ using Avalonia.Interactivity;
 namespace CHRDRI_GUI_Flood_It_2025;
 
 public partial class MainWindow : Window {
-	private static Color[] colors = {
+	private static readonly Random PRNG = new Random();
+
+	private static readonly Color[] colors = {
 		Colors.Yellow,
 		Colors.Red,
 		Colors.Green,
@@ -24,7 +27,22 @@ public partial class MainWindow : Window {
 	private int width = 10;
 	private int height = 10;
 
+	private string[] players = {"Player 1", "Player 2"};
+
 	private void reset() {
+		for(int h=0; h<height; h++) {
+			for(int w=0; w<width; w++) {
+				int index = PRNG.Next(0, colors.Length);
+				tiles[w][h].Background = new SolidColorBrush( colors[ index ] );
+			}
+		}
+
+		while(tiles[0][0] == tiles[width-1][height-1]) {
+			int index = PRNG.Next(0, colors.Length);
+			tiles[0][0].Background = new SolidColorBrush( colors[ index ] );
+		}
+
+		turn = 0;
 	}
 
 	public MainWindow() {
@@ -135,11 +153,66 @@ public partial class MainWindow : Window {
 		tiles[7][9] = this.FindControl<Button>("Button0709");
 		tiles[8][9] = this.FindControl<Button>("Button0809");
 		tiles[9][9] = this.FindControl<Button>("Button0909");
+
+		reset();
+
+		this.Title = "Playing " + players[ turn%players.Length ] + " turn "+turn+".";
+	}
+
+	private void flood(int x, int y, Color current, Color change) {
+		if(x < 0) {
+			return;
+		}
+		if(y < 0) {
+			return;
+		}
+		if(x >= width) {
+			return;
+		}
+		if(y >= height) {
+			return;
+		}
+
+		Color observed = ((SolidColorBrush)((Button)tiles[x][y]).Background).Color;
+		if(observed != current) {
+			return;
+		}
+
+		tiles[x][y].Background = new SolidColorBrush( change );
+
+		flood(x-1, y, current, change);
+		flood(x, y-1, current, change);
+		flood(x+1, y, current, change);
+		flood(x, y+1, current, change);
 	}
 
 	private void onButtonClick(object? sender, RoutedEventArgs e) {
-		this.Title = "Hi!";
-		((Button)sender).Background = new SolidColorBrush(Colors.Green);
+		Color change = ((SolidColorBrush)((Button)sender).Background).Color;
+
+		Color corner1 = ((SolidColorBrush)((Button)tiles[0][0]).Background).Color;
+
+		Color corner2 = ((SolidColorBrush)((Button)tiles[width-1][height-1]).Background).Color;
+
+		if(change == corner1) {
+			return;
+		}
+
+		if(change == corner2) {
+			return;
+		}
+
+		switch(turn % players.Length) {
+		case 0:
+			flood(0, 0, corner1, change);
+			break;
+		case 1:
+			flood(width-1, height-1, corner2, change);
+			break;
+		}
+
+		turn++;
+
+		this.Title = "Playing " + players[ turn%players.Length ] + " turn "+turn+".";
 	}
 }
 
