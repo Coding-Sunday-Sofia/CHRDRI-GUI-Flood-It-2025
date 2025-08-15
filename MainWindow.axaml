@@ -8,21 +8,33 @@
 
 <Grid>
     <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
-    
-<Button Content=" "
-        Grid.Column="0"
-        x:Name="Button0000"
-        Background="#0000FF"
-        Foreground="Black"/>
 
-<Button Content=" "
-        Grid.Column="1"
-        x:Name="Button0100"
-        Background="#00FF00"
-        Foreground="Black"/>
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+        
+<Button Content=" " Grid.Column="0" Grid.Row="0" x:Name="Button0000" Background="#FF00FF" Foreground="Black" Click="onButtonClick"/>
+
 </Grid>
 
 </Window>
